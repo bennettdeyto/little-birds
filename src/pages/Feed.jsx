@@ -1,21 +1,25 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import bird1Url from '../assets/Bird1.svg?url'
 import bird2Url from '../assets/Bird2.svg?url'
 import bird3Url from '../assets/Bird3.svg?url'
 import { colors } from '../lib/colors'
 import { birdDisplayWidth } from '../lib/birdWidth'
 import { formatEntryDate } from '../lib/formatDate'
-import { shuffleFeedMoments } from '../lib/feedMoments'
+import { supabase } from '../lib/supabase'
 import { fontBody } from '../lib/type'
 
 const BIRD_SRC = [bird1Url, bird2Url, bird3Url]
 
-export default function Feed() {
-  const moments = useMemo(() => shuffleFeedMoments(), [])
-  const lastIdx = Math.max(0, moments.length - 1)
-  const [index, setIndex] = useState(0)
-  const safeIndex = Math.min(index, lastIdx)
+function isToday(iso) {
+  const d = new Date(iso)
+  const now = new Date()
+  return d.toDateString() === now.toDateString()
+}
 
+export default function Feed() {
+  const [rows, setRows] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [index, setIndex] = useState(0)
   const [dragY, setDragY] = useState(0)
   const [transformTs, setTransformTs] = useState('none')
   const startY = useRef(0)
@@ -23,6 +27,38 @@ export default function Feed() {
   const lock = useRef(false)
   const panelRef = useRef(null)
   const pendingAfterExit = useRef(null)
+
+  useEffect(() => {
+    let cancelled = false
+    async function load() {
+      if (!supabase) {
+        setLoading(false)
+        return
+      }
+      const { data, error } = await supabase
+        .from('birds')
+        .select('id, text, created_at')
+        .order('created_at', { ascending: false })
+        .limit(200)
+      if (cancelled) return
+      if (error || !data) {
+        setRows([])
+        setLoading(false)
+        return
+      }
+      const today = data.filter((r) => isToday(r.created_at))
+      setRows(today)
+      setLoading(false)
+    }
+    load()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const moments = rows.map((r) => r.text)
+  const lastIdx = Math.max(0, moments.length - 1)
+  const safeIndex = Math.min(index, lastIdx)
 
   const goNextAnimated = useCallback(() => {
     const el = panelRef.current
@@ -124,6 +160,54 @@ export default function Feed() {
   const birdW = birdDisplayWidth(28, birdVariant)
 
   const dateLine = `today · ${formatEntryDate(new Date().toISOString())}`
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          minHeight: '100dvh',
+          background: colors.bg,
+          maxWidth: 430,
+          margin: '0 auto',
+        }}
+      />
+    )
+  }
+
+  if (!supabase || moments.length === 0) {
+    return (
+      <div
+        style={{
+          minHeight: '100dvh',
+          background: colors.bg,
+          paddingBottom: 100,
+          maxWidth: 430,
+          margin: '0 auto',
+          padding: '48px 24px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <p
+          style={{
+            fontFamily: fontBody,
+            fontStyle: 'italic',
+            fontWeight: 400,
+            fontSize: 15,
+            color: colors.textFaint,
+            textAlign: 'center',
+            margin: 0,
+          }}
+        >
+          {!supabase
+            ? 'connect the app to see birds from today'
+            : 'no little birds today yet'}
+        </p>
+      </div>
+    )
+  }
 
   return (
     <div

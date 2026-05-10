@@ -11,26 +11,34 @@ import { fontBody } from '../lib/type'
 
 const BIRD = [bird1Url, bird2Url, bird3Url]
 
+/** visual: bird uses SVG birds; icon uses Tabler (aligned with bottom nav) */
 const SLIDES = [
   {
-    title: 'little birds',
+    title: 'Little Birds',
     body:
-      'a little bird is a small moment worth remembering — the coffee that tasted right, a joke that landed, light through the blinds. few words are enough.',
+      'a little bird is a small moment worth remembering — the coffee that tasted right, a joke that landed, light through the blinds.',
+    visual: 'bird',
+    birdIndex: 0,
+    firstBirdLift: true,
   },
   {
     title: 'log',
-    body:
-      'note one thing you noticed today (or anytime). there’s room for plain language and no rush — just a gentle place for what caught you.',
+    body: 'note one thing you noticed today. something small that made you happy.',
+    visual: 'icon',
+    iconClass: 'ti ti-feather',
   },
   {
-    title: 'the feed',
-    body:
-      'swipe through an anonymous collage of tiny joys — what lifted someone else, without needing to match it or perform.',
+    title: '',
+    body: 'swipe through an anonymous collage of tiny joys',
+    visual: 'icon',
+    iconClass: 'ti ti-heart',
   },
   {
     title: 'your tree',
     body:
       'everything you save gathers on your tree: a spare list of the small moments that made you glad you looked up.',
+    visual: 'icon',
+    iconClass: 'ti ti-leaf',
   },
 ]
 
@@ -137,7 +145,8 @@ export default function OnboardingFlow() {
   }
 
   const slide = SLIDES[step]
-  const birdW = birdDisplayWidth(56, step)
+  const birdIdx = slide.visual === 'bird' ? slide.birdIndex % 3 : 0
+  const birdW = birdDisplayWidth(56, birdIdx)
 
   return (
     <div
@@ -185,23 +194,50 @@ export default function OnboardingFlow() {
           paddingBottom: 24,
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 28 }}>
-          <img src={BIRD[step % 3]} alt="" width={birdW} height="auto" style={{ display: 'block' }} />
-        </div>
-        <h2
+        <div
           style={{
-            fontFamily: fontBody,
-            fontWeight: 400,
-            fontSize: 13,
-            textTransform: 'uppercase',
-            letterSpacing: '0.14em',
-            color: colors.textMuted,
-            margin: '0 0 16px',
-            textAlign: 'center',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginBottom: 28,
+            minHeight: 64,
           }}
         >
-          {slide.title}
-        </h2>
+          {slide.visual === 'bird' ? (
+            <img
+              src={BIRD[birdIdx]}
+              alt=""
+              width={birdW}
+              height="auto"
+              style={{
+                display: 'block',
+                transform: slide.firstBirdLift ? 'translateY(-70%)' : undefined,
+              }}
+            />
+          ) : (
+            <i
+              className={slide.iconClass}
+              style={{ fontSize: 52, color: colors.textDark, lineHeight: 1 }}
+              aria-hidden
+            />
+          )}
+        </div>
+        {slide.title ? (
+          <h2
+            style={{
+              fontFamily: fontBody,
+              fontWeight: 400,
+              fontSize: 13,
+              textTransform: step === 0 ? 'none' : 'uppercase',
+              letterSpacing: step === 0 ? '0.06em' : '0.14em',
+              color: colors.textMuted,
+              margin: '0 0 16px',
+              textAlign: 'center',
+            }}
+          >
+            {slide.title}
+          </h2>
+        ) : null}
         <p
           style={{
             fontFamily: fontBody,

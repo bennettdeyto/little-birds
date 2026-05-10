@@ -4,6 +4,7 @@ import BottomSheet from '../components/BottomSheet'
 import { colors } from '../lib/colors'
 import { formatEntryDate } from '../lib/formatDate'
 import { getBirds } from '../lib/storage'
+import { getSiteOrigin } from '../lib/siteUrl'
 import { supabase } from '../lib/supabase'
 import { fontBody } from '../lib/type'
 import treeUrl from '../assets/Tree.svg?url'
@@ -33,7 +34,7 @@ export default function TreePage() {
         entries,
       })
       if (error) throw error
-      setShareUrl(`${window.location.origin}/board/${id}`)
+      setShareUrl(`${getSiteOrigin()}/board/${id}`)
     } catch {
       setShareUrl(null)
       setShareHint('could not save the board — try again')
@@ -59,11 +60,39 @@ export default function TreePage() {
         paddingBottom: 100,
       }}
     >
+      <button
+        type="button"
+        onClick={createShareBoard}
+        disabled={shareBusy}
+        aria-label="Share board"
+        style={{
+          position: 'fixed',
+          top: 12,
+          left: 16,
+          width: 36,
+          height: 36,
+          borderRadius: '50%',
+          border: `0.5px solid ${colors.border}`,
+          background: colors.bgCard,
+          color: colors.red,
+          cursor: shareBusy ? 'wait' : 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 0,
+          zIndex: 50,
+        }}
+      >
+        <i className="ti ti-share" style={{ fontSize: 18 }} />
+      </button>
+
       <div
         style={{
           display: 'flex',
           justifyContent: 'center',
+          alignItems: 'center',
           padding: '12px 16px 8px',
+          minHeight: 44,
         }}
       >
         <div
@@ -138,7 +167,6 @@ export default function TreePage() {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: 14,
             }}
           >
             <p
@@ -154,26 +182,6 @@ export default function TreePage() {
             >
               {birds.length} birds
             </p>
-            <button
-              type="button"
-              onClick={createShareBoard}
-              disabled={shareBusy}
-              style={{
-                border: `0.5px solid ${colors.redLight}`,
-                color: colors.red,
-                background: 'transparent',
-                borderRadius: 10,
-                padding: '10px 20px',
-                fontFamily: fontBody,
-                fontWeight: 300,
-                fontSize: 11,
-                textTransform: 'uppercase',
-                letterSpacing: '0.1em',
-                cursor: shareBusy ? 'wait' : 'pointer',
-              }}
-            >
-              share board
-            </button>
           </div>
         </>
       ) : (

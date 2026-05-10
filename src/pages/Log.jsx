@@ -10,7 +10,17 @@ import { fontBody } from '../lib/type'
 
 const BIRD_SRC = [bird1Url, bird2Url, bird3Url]
 
+const INPUT_PLACEHOLDERS = [
+  'What did you notice today...',
+  'What brought you joy...',
+  'Write others',
+]
+
 export default function Log() {
+  const [placeholder] = useState(
+    () => INPUT_PLACEHOLDERS[Math.floor(Math.random() * INPUT_PLACEHOLDERS.length)],
+  )
+
   const [input, setInput] = useState('')
   const [birds, setBirds] = useState(getBirds)
 
@@ -120,7 +130,7 @@ export default function Log() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="What did you notice today..."
+            placeholder={placeholder}
             autoComplete="off"
             autoCorrect="off"
             style={{

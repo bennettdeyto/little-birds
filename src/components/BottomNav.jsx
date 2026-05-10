@@ -4,7 +4,7 @@ import { fontBody } from '../lib/type'
 
 const tabs = [
   { label: 'log', icon: 'feather', path: '/log' },
-  { label: 'feed', icon: 'wind', path: '/feed' },
+  { label: 'feed', icon: 'heart', path: '/feed' },
   { label: 'tree', icon: 'leaf', path: '/tree' },
 ]
 
