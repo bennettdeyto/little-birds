@@ -6,7 +6,7 @@ import bird3Url from '../assets/Bird3.svg?url'
 import { colors } from '../lib/colors'
 import { birdDisplayWidth } from '../lib/birdWidth'
 import { formatEntryDate } from '../lib/formatDate'
-import { fontBody, fontHeader } from '../lib/type'
+import { fontBody } from '../lib/type'
 import { supabase } from '../lib/supabase'
 
 const BIRD_SRC = [bird1Url, bird2Url, bird3Url]
@@ -138,7 +138,7 @@ export default function Board() {
       <header style={{ textAlign: 'center', marginBottom: 24 }}>
         <h1
           style={{
-            fontFamily: fontHeader,
+            fontFamily: fontBody,
             fontSize: 18,
             fontWeight: 400,
             color: colors.textDark,

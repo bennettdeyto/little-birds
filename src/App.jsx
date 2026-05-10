@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import BottomNav from './components/BottomNav'
 import GlobalInfoButton from './components/GlobalInfoButton'
 import LogInfoModal from './components/LogInfoModal'
@@ -8,7 +8,7 @@ import Board from './pages/Board'
 import Feed from './pages/Feed'
 import Log from './pages/Log'
 import Poem from './pages/Poem'
-import Splash from './pages/Splash'
+import HomeGate from './pages/HomeGate'
 import TreePage from './pages/Tree'
 import { colors } from './lib/colors'
 
@@ -29,18 +29,21 @@ function AppShell({ children }) {
 
 export default function App() {
   const [infoOpen, setInfoOpen] = useState(false)
+  const { pathname } = useLocation()
 
   useEffect(() => {
     const userId = getUserId()
     syncFromSupabase(userId)
   }, [])
 
+  const showHelp = pathname !== '/'
+
   return (
     <>
-      <GlobalInfoButton onClick={() => setInfoOpen(true)} />
+      {showHelp && <GlobalInfoButton onClick={() => setInfoOpen(true)} />}
       <LogInfoModal open={infoOpen} onClose={() => setInfoOpen(false)} />
       <Routes>
-        <Route path="/" element={<Splash />} />
+        <Route path="/" element={<HomeGate />} />
         <Route
           path="/log"
           element={

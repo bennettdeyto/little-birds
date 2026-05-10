@@ -6,7 +6,7 @@ import { colors } from '../lib/colors'
 import { birdDisplayWidth } from '../lib/birdWidth'
 import { formatEntryDate } from '../lib/formatDate'
 import { shuffleFeedMoments } from '../lib/feedMoments'
-import { fontBody, fontHeader } from '../lib/type'
+import { fontBody } from '../lib/type'
 
 const BIRD_SRC = [bird1Url, bird2Url, bird3Url]
 
@@ -158,7 +158,7 @@ export default function Feed() {
 
       <p
         style={{
-          fontFamily: fontHeader,
+          fontFamily: fontBody,
           fontWeight: 400,
           fontSize: 11,
           lineHeight: 1.5,

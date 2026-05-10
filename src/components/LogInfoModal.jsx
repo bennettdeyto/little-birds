@@ -1,5 +1,5 @@
 import { colors } from '../lib/colors'
-import { fontBody, fontHeader } from '../lib/type'
+import { fontBody } from '../lib/type'
 
 const POEM_STANZAS = [
   ['may my heart always be open to little', 'birds who are the secrets of living', 'whatever they sing is better than to know', 'and if men should not hear them men are old'],
@@ -61,7 +61,7 @@ export default function LogInfoModal({ open, onClose }) {
           <h2
             id="log-info-title"
             style={{
-              fontFamily: fontHeader,
+              fontFamily: fontBody,
               fontSize: 13,
               fontWeight: 400,
               color: colors.textMuted,

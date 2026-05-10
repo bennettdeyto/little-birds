@@ -1,7 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import '@fontsource/iosevka-charon-mono/400.css'
 import '@fontsource/intel-one-mono/300.css'
 import '@fontsource/intel-one-mono/400.css'
 import '@fontsource/intel-one-mono/300-italic.css'
