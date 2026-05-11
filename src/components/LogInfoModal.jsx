@@ -117,10 +117,11 @@ export default function LogInfoModal({ open, onClose }) {
                     fontFamily: fontBody,
                     fontStyle: 'italic',
                     fontWeight: 400,
-                    fontSize: 13,
-                    lineHeight: 1.75,
+                    fontSize: 11,
+                    lineHeight: 1.55,
                     color: colors.textDark,
                     margin: '0.12em 0',
+                    whiteSpace: 'nowrap',
                   }}
                 >
                   {line}

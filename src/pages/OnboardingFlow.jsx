@@ -24,7 +24,7 @@ const SLIDES = [
     iconClass: 'ti ti-feather',
   },
   {
-    title: '',
+    title: 'feed',
     body: 'swipe through an anonymous collage of tiny joys.',
     visual: 'icon',
     iconClass: 'ti ti-heart',

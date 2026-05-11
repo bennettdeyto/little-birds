@@ -32,18 +32,25 @@ export default function Log() {
 
   const hasEntries = birds.length > 0
   const latest = birds[0]
+  const hasEntryToday =
+    !!latest
+    && new Date(latest.created_at).toDateString() === new Date().toDateString()
   const variant = hasEntries ? (birds.length - 1) % BIRD_COUNT : 0
   const birdSrc = BIRD_SRC[variant]
   const birdW = birdDisplayWidth(72, variant)
 
-  async function handleKeyDown(e) {
-    if (e.key !== 'Enter') return
+  async function submitEntry() {
     const text = input.trim()
     if (!text) return
-    e.preventDefault()
     await saveAndSync(text)
     setInput('')
     setBirds(getBirds())
+  }
+
+  async function handleKeyDown(e) {
+    if (e.key !== 'Enter') return
+    e.preventDefault()
+    await submitEntry()
   }
 
   return (
@@ -120,19 +127,21 @@ export default function Log() {
         )}
 
         <div>
-          <p
-            style={{
-              fontFamily: fontBody,
-              fontWeight: 300,
-              fontSize: 9,
-              textTransform: 'uppercase',
-              letterSpacing: '0.15em',
-              color: colors.textFaint,
-              margin: '0 0 12px',
-            }}
-          >
-            today · {formatEntryDate(new Date().toISOString())}
-          </p>
+          {!hasEntryToday && (
+            <p
+              style={{
+                fontFamily: fontBody,
+                fontWeight: 300,
+                fontSize: 9,
+                textTransform: 'uppercase',
+                letterSpacing: '0.15em',
+                color: colors.textFaint,
+                margin: '0 0 12px',
+              }}
+            >
+              today · {formatEntryDate(new Date().toISOString())}
+            </p>
+          )}
           <input
             type="text"
             value={input}
@@ -169,6 +178,26 @@ export default function Log() {
               ? 'press enter to add another small moment'
               : 'a few words is enough'}
           </p>
+          <div style={{ marginTop: 10, display: 'flex', justifyContent: 'flex-end' }}>
+            <button
+              type="button"
+              onClick={submitEntry}
+              style={{
+                border: `1px solid ${colors.border}`,
+                background: colors.bgCard,
+                color: colors.textDark,
+                fontFamily: fontBody,
+                fontSize: 10,
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                borderRadius: 6,
+                padding: '8px 12px',
+                cursor: 'pointer',
+              }}
+            >
+              submit
+            </button>
+          </div>
         </div>
       </div>
     </div>
