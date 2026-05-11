@@ -8,8 +8,8 @@ const POEM_STANZAS = [
 ]
 
 const APP_TEXT = [
-  'this app was made in the spirit of a poem by e. e. cummings.',
-  'what he meant, we think, is that the small moments are the ones that actually matter. not just the milestones. not just the big days. the morning coffee that was exactly right. a joke that landed. facetiming your brother after too long.',
+  'this app was inspired by this poem by e. e. cummings.',
+  'what he meant, i think, is that the small moments are the ones that actually matter. not just the milestones. not just the big days. the morning coffee that was exactly right. a joke that landed. facetiming your brother after too long.',
   "these are the things that make up most of a life, and they're the easiest to let pass without noticing.",
   'Little Birds gives you somewhere to put them. one small thing, one day at a time. no pressure, no performance. just a quiet record of the things that caught you.',
   'because if you pay attention to the little birds long enough, you start to realize how full the tree already is.',
@@ -58,18 +58,38 @@ export default function LogInfoModal({ open, onClose }) {
             marginBottom: 16,
           }}
         >
-          <h2
+          <div
             id="log-info-title"
             style={{
-              fontFamily: fontBody,
-              fontSize: 13,
-              fontWeight: 400,
-              color: colors.textMuted,
-              margin: 0,
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'baseline',
+              gap: '0 10px',
             }}
           >
-            19
-          </h2>
+            <h2
+              style={{
+                fontFamily: fontBody,
+                fontSize: 13,
+                fontWeight: 400,
+                color: colors.textMuted,
+                margin: 0,
+              }}
+            >
+              19
+            </h2>
+            <span
+              style={{
+                fontFamily: fontBody,
+                fontSize: 11,
+                fontWeight: 300,
+                color: colors.textFaint,
+                letterSpacing: '0.06em',
+              }}
+            >
+              e. e. cummings
+            </span>
+          </div>
           <button
             type="button"
             onClick={onClose}
@@ -159,6 +179,19 @@ export default function LogInfoModal({ open, onClose }) {
             {p}
           </p>
         ))}
+        <p
+          style={{
+            fontFamily: fontBody,
+            fontWeight: 300,
+            fontSize: 12,
+            lineHeight: 1.65,
+            color: colors.textFaint,
+            margin: '1.1em 0 0',
+            letterSpacing: '0.06em',
+          }}
+        >
+          - bd
+        </p>
       </div>
     </div>
   )

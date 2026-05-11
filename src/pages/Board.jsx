@@ -1,15 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import bird1Url from '../assets/Bird1.svg?url'
-import bird2Url from '../assets/Bird2.svg?url'
-import bird3Url from '../assets/Bird3.svg?url'
 import { colors } from '../lib/colors'
+import { BIRD_COUNT, BIRD_SRC } from '../lib/birdAssets'
 import { birdDisplayWidth } from '../lib/birdWidth'
 import { formatEntryDate } from '../lib/formatDate'
 import { fontBody } from '../lib/type'
 import { supabase } from '../lib/supabase'
-
-const BIRD_SRC = [bird1Url, bird2Url, bird3Url]
 
 export default function Board() {
   const { id } = useParams()
@@ -170,7 +166,7 @@ export default function Board() {
         }}
       >
         {ordered.map((entry, index) => {
-          const v = index % 3
+          const v = index % BIRD_COUNT
           return (
           <article
             key={entry.id || index}

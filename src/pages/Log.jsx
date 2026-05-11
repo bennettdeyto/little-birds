@@ -1,19 +1,15 @@
-import { useState } from 'react'
-import bird1Url from '../assets/Bird1.svg?url'
-import bird2Url from '../assets/Bird2.svg?url'
-import bird3Url from '../assets/Bird3.svg?url'
+import { useEffect, useRef, useState } from 'react'
 import { colors } from '../lib/colors'
+import { BIRD_COUNT, BIRD_SRC } from '../lib/birdAssets'
 import { birdDisplayWidth } from '../lib/birdWidth'
 import { formatEntryDate } from '../lib/formatDate'
 import { getBirds, saveAndSync } from '../lib/storage'
 import { fontBody } from '../lib/type'
 
-const BIRD_SRC = [bird1Url, bird2Url, bird3Url]
-
 const INPUT_PLACEHOLDERS = [
   'What did you notice today...',
   'What brought you joy...',
-  'Write others',
+  'A special moment...',
 ]
 
 export default function Log() {
@@ -23,10 +19,20 @@ export default function Log() {
 
   const [input, setInput] = useState('')
   const [birds, setBirds] = useState(getBirds)
+  const [birdPopSeq, setBirdPopSeq] = useState(0)
+  const prevBirdCount = useRef(birds.length)
+
+  useEffect(() => {
+    const n = birds.length
+    if (n > prevBirdCount.current) {
+      setBirdPopSeq((s) => s + 1)
+    }
+    prevBirdCount.current = n
+  }, [birds.length])
 
   const hasEntries = birds.length > 0
   const latest = birds[0]
-  const variant = hasEntries ? (birds.length - 1) % 3 : 0
+  const variant = hasEntries ? (birds.length - 1) % BIRD_COUNT : 0
   const birdSrc = BIRD_SRC[variant]
   const birdW = birdDisplayWidth(72, variant)
 
@@ -70,6 +76,8 @@ export default function Log() {
           }}
         >
           <img
+            key={birdPopSeq > 0 ? `bird-pop-${birdPopSeq}` : 'bird-idle'}
+            className={birdPopSeq > 0 ? 'lb-log-bird-pop' : undefined}
             src={birdSrc}
             alt=""
             width={birdW}

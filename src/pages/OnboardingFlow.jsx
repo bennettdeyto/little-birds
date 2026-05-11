@@ -1,15 +1,11 @@
 import { useCallback, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import bird1Url from '../assets/Bird1.svg?url'
-import bird2Url from '../assets/Bird2.svg?url'
-import bird3Url from '../assets/Bird3.svg?url'
 import startScreenUrl from '../assets/start-screen.svg?url'
+import { BIRD_COUNT, BIRD_SRC } from '../lib/birdAssets'
 import { colors } from '../lib/colors'
 import { birdDisplayWidth } from '../lib/birdWidth'
 import { markOnboardingComplete } from '../lib/onboarding'
 import { fontBody } from '../lib/type'
-
-const BIRD = [bird1Url, bird2Url, bird3Url]
 
 /** visual: bird uses SVG birds; icon uses Tabler (aligned with bottom nav) */
 const SLIDES = [
@@ -29,7 +25,7 @@ const SLIDES = [
   },
   {
     title: '',
-    body: 'swipe through an anonymous collage of tiny joys',
+    body: 'swipe through an anonymous collage of tiny joys.',
     visual: 'icon',
     iconClass: 'ti ti-heart',
   },
@@ -46,6 +42,7 @@ export default function OnboardingFlow() {
   const navigate = useNavigate()
   const [step, setStep] = useState(-1)
   const touchStartY = useRef(null)
+  const instructionsTouchStart = useRef(null)
 
   const finish = useCallback(() => {
     markOnboardingComplete()
@@ -61,6 +58,34 @@ export default function OnboardingFlow() {
     const dy = touchStartY.current - e.changedTouches[0].clientY
     touchStartY.current = null
     if (step === -1 && dy > 48) setStep(0)
+  }
+
+  function onInstructionsSwipeStart(e) {
+    instructionsTouchStart.current = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    }
+  }
+
+  function onInstructionsSwipeEnd(e) {
+    const start = instructionsTouchStart.current
+    if (start == null) return
+    const x = e.changedTouches[0].clientX
+    const y = e.changedTouches[0].clientY
+    instructionsTouchStart.current = null
+
+    const dx = x - start.x
+    const dy = y - start.y
+    const threshold = 48
+
+    if (Math.abs(dx) < threshold || Math.abs(dx) < Math.abs(dy)) return
+
+    if (dx < 0) {
+      if (step >= SLIDES.length - 1) finish()
+      else setStep(step + 1)
+    } else if (step > 0) {
+      setStep(step - 1)
+    }
   }
 
   if (step === -1) {
@@ -145,7 +170,7 @@ export default function OnboardingFlow() {
   }
 
   const slide = SLIDES[step]
-  const birdIdx = slide.visual === 'bird' ? slide.birdIndex % 3 : 0
+  const birdIdx = slide.visual === 'bird' ? slide.birdIndex % BIRD_COUNT : 0
   const birdW = birdDisplayWidth(56, birdIdx)
 
   return (
@@ -185,6 +210,12 @@ export default function OnboardingFlow() {
       </button>
 
       <div
+        role="presentation"
+        onTouchStart={onInstructionsSwipeStart}
+        onTouchEnd={onInstructionsSwipeEnd}
+        onTouchCancel={() => {
+          instructionsTouchStart.current = null
+        }}
         style={{
           flex: 1,
           display: 'flex',
@@ -192,6 +223,7 @@ export default function OnboardingFlow() {
           justifyContent: 'center',
           paddingTop: 40,
           paddingBottom: 24,
+          touchAction: 'none',
         }}
       >
         <div
@@ -205,7 +237,7 @@ export default function OnboardingFlow() {
         >
           {slide.visual === 'bird' ? (
             <img
-              src={BIRD[birdIdx]}
+              src={BIRD_SRC[birdIdx]}
               alt=""
               width={birdW}
               height="auto"

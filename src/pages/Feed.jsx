@@ -1,14 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import bird1Url from '../assets/Bird1.svg?url'
-import bird2Url from '../assets/Bird2.svg?url'
-import bird3Url from '../assets/Bird3.svg?url'
 import { colors } from '../lib/colors'
+import { BIRD_COUNT, BIRD_SRC } from '../lib/birdAssets'
 import { birdDisplayWidth } from '../lib/birdWidth'
 import { formatEntryDate } from '../lib/formatDate'
 import { supabase } from '../lib/supabase'
 import { fontBody } from '../lib/type'
-
-const BIRD_SRC = [bird1Url, bird2Url, bird3Url]
 
 function isToday(iso) {
   const d = new Date(iso)
@@ -155,7 +151,7 @@ export default function Feed() {
   }
 
   const current = moments[safeIndex]
-  const birdVariant = safeIndex % 3
+  const birdVariant = safeIndex % BIRD_COUNT
   const birdSrc = BIRD_SRC[birdVariant]
   const birdW = birdDisplayWidth(28, birdVariant)
 
